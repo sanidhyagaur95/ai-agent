@@ -1,28 +1,42 @@
 import { Ollama } from "ollama";
+import type { ChatResponse, Message, Tool } from "ollama";
+
 import { config } from "../config/config.js";
 
 const ollama = new Ollama({
   host: config.ollama.host,
 });
 
-type Message = {
-  role: "system" | "user" | "assistant",
-  content: string,
-}
-
-export const chat = async(
+export async function chat(
   model: string,
-  messages: Message[]
-): Promise<string> => {
-  const response = await ollama.chat({
+  messages: Message[],
+  tools?: Tool[],
+): Promise<ChatResponse> {
+  return ollama.chat({
     model,
     messages,
+    tools,
   });
-
-  return response.message.content;
 }
 
+export async function codingChat(
+  messages: Message[],
+  tools?: Tool[],
+): Promise<ChatResponse> {
+  return chat(
+    config.ollama.codingModel,
+    messages,
+    tools,
+  );
+}
 
-export const codingChat = async(messages: Message[]): Promise<string> => chat(config.ollama.codingModel, messages);
+export async function formattingChat(
+  messages: Message[],
+): Promise<ChatResponse> {
+  const response = await chat(
+    config.ollama.formattingModel,
+    messages,
+  );
 
-export const formattingChat = async(messages: Message[]): Promise<string> => chat(config.ollama.formattingModel, messages);
+  return response;
+}

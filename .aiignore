@@ -1,0 +1,45 @@
+# Git
+.git/
+
+# Node
+node_modules/
+
+# Java / Kotlin
+target/
+build/
+out/
+.gradle/
+
+# JavaScript / TypeScript
+dist/
+coverage/
+.cache/
+.next/
+.nuxt/
+.turbo/
+.svelte-kit/
+
+# Python
+.venv/
+__pycache__/
+.pytest_cache/
+
+# IDE
+.idea/
+.vscode/
+
+# Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

@@ -3,7 +3,8 @@ import express, { Application } from "express";
 import { config } from "./config/config.js";
 import { runAgent } from "./agent/agent.js";
 import { listFiles, readFile } from "./tools/filesystem.js";
-import { getProjectFiles } from "./tools/git.js";
+import { getGitStatus, getProjectFiles } from "./tools/git.js";
+import { searchFiles } from "./tools/search.js";
 
 const app: Application = express();
 
@@ -86,15 +87,42 @@ app.get("/api/v1/files/read", async (req, res) => {
 app.get("/api/v1/project/files", async (_req, res) => {
   try {
     const files = await getProjectFiles();
+    const status = await getGitStatus();
 
     return res.json({
       files,
+      status,
     });
   } catch (error) {
     console.error("Git error:", error);
 
     return res.status(500).json({
       error: "Unable to get project files",
+    });
+  }
+});
+
+app.get("/api/v1/project/search", async (req, res) => {
+  try {
+    const query = req.query.q;
+
+    if (typeof query !== "string" || !query.trim()) {
+      return res.status(400).json({
+        error: "q query parameter is required",
+      });
+    }
+
+    const matches = await searchFiles(query);
+
+    return res.json({
+      query,
+      matches,
+    });
+  } catch (error) {
+    console.error("Search error:", error);
+
+    return res.status(500).json({
+      error: "Unable to search project",
     });
   }
 });
