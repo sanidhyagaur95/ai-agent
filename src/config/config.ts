@@ -1,5 +1,11 @@
 const port = Number.parseInt(process.env.PORT ?? "3000", 10);
 
+const projectRoot = process.env.PROJECT_ROOT;
+
+if (!projectRoot) {
+  throw new Error("PROJECT_ROOT is not configured");
+}
+
 export const config = {
   ollama: {
     host: process.env.OLLAMA_HOST ?? "http://localhost:11434",
@@ -8,6 +14,10 @@ export const config = {
   },
 
   server: {
-    port: Number(process.env.PORT) ?? 3000,
+    port: port,
+  },
+
+  project: {
+    root: projectRoot,
   }
 } as const;
