@@ -1,15 +1,7 @@
-import { codingChat } from "../models/ollama.js";
+import type { ChatMessage, LLMProvider } from "../llm/provider.js";
 import { projectTools } from "./project-tools.js";
-import { toOllamaTools } from "./ollama-tools.js";
-import { Message } from "ollama";
 
-const ollamaTools = toOllamaTools(projectTools);
-
-export async function runAgent(message: string): Promise<string> {
-  const messages: Message[] = [
-    {
-      role: "system",
-      content: `
+const SYSTEM_PROMPT = `
 You are a coding agent.
 
 You have access to tools that allow you to inspect the target project.
@@ -23,59 +15,60 @@ Do not assume the contents of files.
 Use the available tools when project information is needed.
 
 Do not expose tool implementation details to the user.
-      `.trim(),
-    },
+`.trim();
 
+export async function runAgent(
+  message: string,
+  llm: LLMProvider,
+): Promise<string> {
+  const messages: ChatMessage[] = [
+    {
+      role: "system",
+      content: SYSTEM_PROMPT,
+    },
     {
       role: "user",
       content: message,
     },
   ];
 
-  for (let iteration = 0; iteration < 20; iteration++) {
-    const response = await codingChat(
-      messages,
-      ollamaTools,
+  const response = await llm.chat(
+    messages,
+    projectTools,
+  );
+
+  messages.push(response);
+
+  if (response.toolCalls.length === 0) {
+    return response.content;
+  }
+
+  for (const toolCall of response.toolCalls) {
+    const tool = projectTools.find(
+      (candidate) => candidate.name === toolCall.name,
     );
 
-    messages.push(response.message);
-
-    if (!response.message.tool_calls?.length) {
-      return response.message.content;
+    if (!tool) {
+      throw new Error(`Unknown tool: ${toolCall.name}`);
     }
 
-    for (const toolCall of response.message.tool_calls) {
-      const tool = projectTools.find(
-        (candidate) =>
-          candidate.name === toolCall.function.name,
-      );
+    let result: unknown;
 
-      if (!tool) {
-        throw new Error(
-          `Unknown tool: ${toolCall.function.name}`,
-        );
-      }
-
-      let result: unknown;
-
-      try {
-        result = await tool.execute(
-          toolCall.function.arguments,
-        );
-      } catch (error) {
-        result = {
-          error:
-            error instanceof Error
-              ? error.message
-              : "Tool execution failed",
-        };
-      }
-
-      messages.push({
-        role: "tool",
-        content: JSON.stringify(result),
-      });
+    try {
+      result = await tool.execute(toolCall.arguments);
+    } catch (error) {
+      result = {
+        error:
+          error instanceof Error
+            ? error.message
+            : "Tool execution failed",
+      };
     }
+
+    messages.push({
+      role: "tool",
+      content: JSON.stringify(result),
+    });
   }
 
   throw new Error("Agent exceeded maximum tool iterations");

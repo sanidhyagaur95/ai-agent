@@ -1,10 +1,11 @@
 import "dotenv/config";
 import express, { Application } from "express";
-import { config } from "./config/config.js";
+import { config, createCodingLLM } from "./config/config.js";
 import { runAgent } from "./agent/agent.js";
 import { listFiles, readFile } from "./tools/filesystem.js";
 import { getGitStatus, getProjectFiles } from "./tools/git.js";
 import { searchFiles } from "./tools/search.js";
+import { OllamaProvider } from "./llm/ollama.js";
 
 const app: Application = express();
 
@@ -28,7 +29,7 @@ app.post("/api/v1/agent", async (req, res) => {
       });
     }
 
-    const response = await runAgent(message);
+    const response = await runAgent(message, createCodingLLM());
 
     return res.json({
       response,

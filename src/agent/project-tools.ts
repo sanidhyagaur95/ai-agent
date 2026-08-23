@@ -1,4 +1,4 @@
-import type { ToolDefinition } from "./tools.js";
+import type { ToolDefinition } from "../tools/types.js";
 
 import { getProjectFiles } from "../tools/git.js";
 import { readFile } from "../tools/filesystem.js";

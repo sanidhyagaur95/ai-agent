@@ -1,5 +1,5 @@
 import type { Tool } from "ollama";
-import type { ToolDefinition } from "./tools.js";
+import type { ToolDefinition } from "../tools/types.js";
 
 export const toOllamaTools = (
   definitions: ToolDefinition[],
