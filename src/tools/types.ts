@@ -1,9 +1,15 @@
+export type JSONSchemaProperty = {
+  type?: string | string[];
+  items?: unknown;
+  description?: string;
+  enum?: unknown[];
+};
+
 export type JSONSchema = {
   type: string;
-  properties?: Record<string, unknown>;
+  properties?: Record<string, JSONSchemaProperty>;
   required?: string[];
   additionalProperties?: boolean;
-  [key: string]: unknown;
 };
 
 export type ToolDefinition = {

@@ -6,11 +6,10 @@ export const toOllamaTools = (
 ): Tool[] => {
   return definitions.map((tool) => ({
     type: "function",
-
     function: {
       name: tool.name,
       description: tool.description,
       parameters: tool.parameters,
     },
   }));
-}
+};

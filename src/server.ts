@@ -5,7 +5,6 @@ import { runAgent } from "./agent/agent.js";
 import { listFiles, readFile } from "./tools/filesystem.js";
 import { getGitStatus, getProjectFiles } from "./tools/git.js";
 import { searchFiles } from "./tools/search.js";
-import { OllamaProvider } from "./llm/ollama.js";
 
 const app: Application = express();
 
