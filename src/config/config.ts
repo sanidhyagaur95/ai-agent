@@ -34,6 +34,13 @@ export const config = {
       process.env.OPENAI_CODING_MODEL ??
       "gpt-5",
   },
+  
+  openrouter: {
+    apiKey: process.env.OPENROUTER_API_KEY,
+    codingModel:
+      process.env.OPENROUTER_CODING_MODEL ??
+      "openai/gpt-5",
+  },
 
   server: {
     port,

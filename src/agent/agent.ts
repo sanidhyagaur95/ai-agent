@@ -32,43 +32,46 @@ export async function runAgent(
     },
   ];
 
-  const response = await llm.chat(
-    messages,
-    projectTools,
-  );
-
-  messages.push(response);
-
-  if (response.toolCalls.length === 0) {
-    return response.content;
-  }
-
-  for (const toolCall of response.toolCalls) {
-    const tool = projectTools.find(
-      (candidate) => candidate.name === toolCall.name,
+  for (let iteration = 0; iteration < 20; iteration++) {
+    const response = await llm.chat(
+      messages,
+      projectTools,
     );
 
-    if (!tool) {
-      throw new Error(`Unknown tool: ${toolCall.name}`);
+    messages.push(response);
+
+    if (response.toolCalls.length === 0) {
+      return response.content;
     }
 
-    let result: unknown;
+    for (const toolCall of response.toolCalls) {
+      const tool = projectTools.find(
+        (candidate) => candidate.name === toolCall.name,
+      );
 
-    try {
-      result = await tool.execute(toolCall.arguments);
-    } catch (error) {
-      result = {
-        error:
-          error instanceof Error
-            ? error.message
-            : "Tool execution failed",
-      };
+      if (!tool) {
+        throw new Error(`Unknown tool: ${toolCall.name}`);
+      }
+
+      let result: unknown;
+
+      try {
+        result = await tool.execute(toolCall.arguments);
+      } catch (error) {
+        result = {
+          error:
+            error instanceof Error
+              ? error.message
+              : "Tool execution failed",
+        };
+      }
+
+      messages.push({
+        role: "tool",
+        content: JSON.stringify(result),
+        toolCallId: toolCall.id,
+      });
     }
-
-    messages.push({
-      role: "tool",
-      content: JSON.stringify(result),
-    });
   }
 
   throw new Error("Agent exceeded maximum tool iterations");
