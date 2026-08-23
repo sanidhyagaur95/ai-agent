@@ -49,14 +49,15 @@ cp .env.example .env
 
 Configure the required values in `.env`.
 
-## Ollama Setup
-
+## Ollama Setup (Optional)
+Follow this step if you do not have any LLM subscription or want to run LLM locally.<br>
+See [ADDING_NEW_LLM.md](ADDING_NEW_LLM.md) to configure your own LLM.
 Install and run Ollama, then pull a suitable coding model.
 
 For example:
 
 ```bash
-ollama pull <your-coding-model>
+ollama pull deepseek-coder-v2:latest
 ```
 
 Configure the Ollama connection in `.env`.
@@ -65,7 +66,7 @@ Example configuration:
 
 ```env
 OLLAMA_HOST=http://localhost:11434
-OLLAMA_CODING_MODEL=<your-coding-model>
+OLLAMA_CODING_MODEL=<your-coding-model for example: deepseek-coder-v2:latest>
 OLLAMA_FORMATTING_MODEL=<your-formatting-model>
 ```
 
