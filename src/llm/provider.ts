@@ -1,7 +1,7 @@
 import type { ToolDefinition } from "../tools/types.js";
 
 export type ToolCall = {
-  id?: string;
+  id: string;
   name: string;
   arguments: Record<string, unknown>;
 };
@@ -23,6 +23,7 @@ export type ChatMessage =
   | {
       role: "tool";
       content: string;
+      toolCallId: string;
     };
 
 export type AssistantResponse = {

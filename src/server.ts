@@ -1,10 +1,11 @@
 import "dotenv/config";
 import express, { Application } from "express";
-import { config, createCodingLLM } from "./config/config.js";
+import { config } from "./config/config.js";
 import { runAgent } from "./agent/agent.js";
 import { listFiles, readFile } from "./tools/filesystem.js";
 import { getGitStatus, getProjectFiles } from "./tools/git.js";
 import { searchFiles } from "./tools/search.js";
+import { createCodingLLM } from "./llm/factory.js";
 
 const app: Application = express();
 

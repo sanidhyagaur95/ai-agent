@@ -19,6 +19,82 @@ The agent is designed with an **LLM provider abstraction**, allowing the same ag
 * 📦 Node.js + TypeScript
 * ⚡ Express.js server
 
+## Requirements
+
+* Node.js
+* pnpm
+* TypeScript
+* An LLM provider
+
+For local inference:
+
+* Ollama
+* A compatible coding model
+
+If you have a cloud agent subscription you will need to add connection details such as keys/secrets in the `.env` file and create new provider for your agent.
+
+## Installation
+
+Clone the repository and install dependencies:
+
+```bash
+pnpm install
+```
+
+Create your environment file:
+
+```bash
+cp .env.example .env
+```
+
+Configure the required values in `.env`.
+
+## Ollama Setup
+
+Install and run Ollama, then pull a suitable coding model.
+
+For example:
+
+```bash
+ollama pull <your-coding-model>
+```
+
+Configure the Ollama connection in `.env`.
+
+Example configuration:
+
+```env
+OLLAMA_HOST=http://localhost:11434
+OLLAMA_CODING_MODEL=<your-coding-model>
+OLLAMA_FORMATTING_MODEL=<your-formatting-model>
+```
+
+The exact environment variable names should match `src/config/config.ts`.
+
+## Running the Project
+
+Start the development server using the package scripts defined in `package.json`.
+
+For example:
+
+```bash
+pnpm dev
+```
+
+Build the project with:
+
+```bash
+pnpm build
+```
+
+Run the compiled application with:
+
+```bash
+pnpm start
+```
+
+If your `package.json` uses different script names, use the corresponding scripts from that file.
+
 ## Architecture
 
 The project separates the agent's reasoning from the underlying LLM provider.
@@ -218,80 +294,6 @@ LLM
 
 Final answer
 ```
-
-## Requirements
-
-* Node.js
-* pnpm
-* TypeScript
-* An LLM provider
-
-For local inference:
-
-* Ollama
-* A compatible coding model
-
-## Installation
-
-Clone the repository and install dependencies:
-
-```bash
-pnpm install
-```
-
-Create your environment file:
-
-```bash
-cp .env.example .env
-```
-
-Configure the required values in `.env`.
-
-## Ollama Setup
-
-Install and run Ollama, then pull a suitable coding model.
-
-For example:
-
-```bash
-ollama pull <your-coding-model>
-```
-
-Configure the Ollama connection in `.env`.
-
-Example configuration:
-
-```env
-OLLAMA_HOST=http://localhost:11434
-OLLAMA_CODING_MODEL=<your-coding-model>
-OLLAMA_FORMATTING_MODEL=<your-formatting-model>
-```
-
-The exact environment variable names should match `src/config/config.ts`.
-
-## Running the Project
-
-Start the development server using the package scripts defined in `package.json`.
-
-For example:
-
-```bash
-pnpm dev
-```
-
-Build the project with:
-
-```bash
-pnpm build
-```
-
-Run the compiled application with:
-
-```bash
-pnpm start
-```
-
-If your `package.json` uses different script names, use the corresponding scripts from that file.
 
 ## LLM Providers
 
