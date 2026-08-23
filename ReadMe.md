@@ -50,8 +50,8 @@ cp .env.example .env
 Configure the required values in `.env`.
 
 ## Ollama Setup (Optional)
+See [ADDING_NEW_LLM.md](ADDING_NEW_LLM.md) to configure your own LLM.<br>
 Follow this step if you do not have any LLM subscription or want to run LLM locally.<br>
-See [ADDING_NEW_LLM.md](ADDING_NEW_LLM.md) to configure your own LLM.
 Install and run Ollama, then pull a suitable coding model.
 
 For example:
