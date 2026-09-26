@@ -21,15 +21,15 @@ app.get("/health", (_req, res) => {
 
 app.post("/api/v1/agent", async (req, res) => {
   try {
-    const { message } = req.body;
+    const { content } = req.body;
 
-    if (typeof message !== "string" || message.trim() === "") {
+    if (typeof content !== "string" || content.trim() === "") {
       return res.status(400).json({
         error: "Message must be a non-empty string",
       });
     }
 
-    const response = await runAgent(message, createCodingLLM());
+    const response = await runAgent(content, createCodingLLM());
 
     return res.json({
       response,

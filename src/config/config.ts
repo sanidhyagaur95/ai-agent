@@ -37,9 +37,8 @@ export const config = {
   
   openrouter: {
     apiKey: process.env.OPENROUTER_API_KEY,
-    codingModel:
-      process.env.OPENROUTER_CODING_MODEL ??
-      "openai/gpt-5",
+    codingModel: process.env.OPENROUTER_CODING_MODEL ?? "openrouter/free",
+    baseURL: process.env.OPENROUTER_BASEURL ?? "https://openrouter.ai/api/v1",
   },
 
   server: {

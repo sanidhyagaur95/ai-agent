@@ -36,3 +36,71 @@ export const readFile = async(relativePath: string): Promise<string> => {
 
   return fs.readFile(targetPath, "utf8");
 }
+
+export async function writeFile(
+  filePath: string,
+  content: string,
+): Promise<string> {
+  const resolved = resolveProjectPath(filePath);
+
+  try {
+    await fs.access(resolved);
+
+    throw new Error(
+      `File already exists: ${filePath}. Use edit_file to modify it.`,
+    );
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      error.message.startsWith("File already exists:")
+    ) {
+      throw error;
+    }
+  }
+
+  await fs.mkdir(path.dirname(resolved), {
+    recursive: true,
+  });
+
+  await fs.writeFile(resolved, content, "utf8");
+
+  return `Created file: ${filePath}`;
+}
+
+export async function editFile(
+  filePath: string,
+  oldText: string,
+  newText: string,
+): Promise<string> {
+  const resolved = resolveProjectPath(filePath);
+
+  const content = await fs.readFile(resolved, "utf8");
+
+  if (!content.includes(oldText)) {
+    throw new Error(
+      `Could not find the specified text in ${filePath}`,
+    );
+  }
+
+  const occurrences = content.split(oldText).length - 1;
+
+  if (occurrences > 1) {
+    throw new Error(
+      `The specified text occurs ${occurrences} times in ${filePath}. ` +
+        `Provide a larger, more specific section so the edit is unambiguous.`,
+    );
+  }
+
+  const updatedContent = content.replace(
+    oldText,
+    newText,
+  );
+
+  await fs.writeFile(
+    resolved,
+    updatedContent,
+    "utf8",
+  );
+
+  return `Updated file: ${filePath}`;
+}

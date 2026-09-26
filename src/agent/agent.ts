@@ -38,6 +38,11 @@ export async function runAgent(
       projectTools,
     );
 
+    console.log("runAgent iteration: ", iteration);
+    console.log("runAgent response.content: ", ...response.content);
+    console.log("runAgent response.role: ", ...response.role);
+    console.log("runAgent response.toolCalls: ", ...response.toolCalls);
+
     messages.push(response);
 
     if (response.toolCalls.length === 0) {
