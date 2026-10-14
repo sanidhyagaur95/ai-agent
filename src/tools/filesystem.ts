@@ -76,13 +76,25 @@ export async function editFile(
 
   const content = await fs.readFile(resolved, "utf8");
 
-  if (!content.includes(oldText)) {
+  // Preserve the file's existing line-ending style.
+  const lineEnding = content.includes("\r\n") ? "\r\n" : "\n";
+
+  // Normalize all inputs to LF for matching.
+  const normalizeLineEndings = (text: string) =>
+    text.replace(/\r\n/g, "\n");
+
+  const normalizedContent = normalizeLineEndings(content);
+  const normalizedOldText = normalizeLineEndings(oldText);
+  const normalizedNewText = normalizeLineEndings(newText);
+
+  if (!normalizedContent.includes(normalizedOldText)) {
     throw new Error(
       `Could not find the specified text in ${filePath}`,
     );
   }
 
-  const occurrences = content.split(oldText).length - 1;
+  const occurrences =
+    normalizedContent.split(normalizedOldText).length - 1;
 
   if (occurrences > 1) {
     throw new Error(
@@ -91,10 +103,16 @@ export async function editFile(
     );
   }
 
-  const updatedContent = content.replace(
-    oldText,
-    newText,
+  const updatedNormalized = normalizedContent.replace(
+    normalizedOldText,
+    normalizedNewText,
   );
+
+  // Convert back to the file's original line-ending style.
+  const updatedContent =
+    lineEnding === "\r\n"
+      ? updatedNormalized.replace(/\n/g, "\r\n")
+      : updatedNormalized;
 
   await fs.writeFile(
     resolved,

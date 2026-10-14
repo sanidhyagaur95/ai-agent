@@ -32,7 +32,7 @@ export async function runAgent(
     },
   ];
 
-  for (let iteration = 0; iteration < 20; iteration++) {
+  for (let iteration = 0; iteration < 30; iteration++) {
     const response = await llm.chat(
       messages,
       projectTools,

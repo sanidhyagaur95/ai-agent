@@ -55,9 +55,16 @@ export class OpenAIProvider implements LLMProvider {
           .map((call) => ({
             id: call.id,
             name: call.function.name,
-            arguments: JSON.parse(
-              call.function.arguments,
-            ) as Record<string, unknown>,
+            arguments: (() => {
+  console.log("RAW TOOL ARGUMENTS:", JSON.stringify(call.function.arguments));
+
+  try {
+    return JSON.parse(call.function.arguments) as Record<string, unknown>;
+  } catch (error) {
+    console.error("INVALID TOOL ARGUMENTS:", call.function.arguments);
+    throw error;
+  }
+})(),
           })) ?? [],
     };
   }
